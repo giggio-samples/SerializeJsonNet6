@@ -2,8 +2,9 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
-	<ItemGroup>
-	  <PackageReference Include="System.Text.Json" Version="6.0.0-preview.6.21352.12" />
+  <ItemGroup>
+		<Using Include="System.Console" Static="true" />
 	</ItemGroup>
 </Project>

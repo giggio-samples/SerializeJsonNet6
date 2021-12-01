@@ -1,29 +1,20 @@
 ﻿using SerializeJson;
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using static SerializeJson.Taste;
-using static System.Console;
 
-using MemoryStream ms = new();
-using Utf8JsonWriter writer = new(ms);
-JsonContext.Default.Person.Serialize(writer, new Person { Name = "Giovanni" });
-writer.Flush();
-using StreamReader reader = new(ms);
-ms.Position = 0;
-WriteLine(reader.ReadToEnd());
-
-WriteLine(JsonSerializer.Serialize(new Food { Calories = 10, Taste = Salty }, new JsonContext(new JsonSerializerOptions
+WriteLine(JsonSerializer.Serialize(new Person("Giovanni"), JsonContext.Default.Person));
+var newContext = new JsonContext(new JsonSerializerOptions
 {
     Converters = { new JsonStringEnumConverter() }
-}).Food));
+});
+WriteLine(JsonSerializer.Serialize(new Food { Calories = 10, Taste = Salty }, newContext.Food));
+var person = JsonSerializer.Deserialize<Person>(@"{""Nome"":""Giovanni""}");
+WriteLine(person!.Nome);
 
 namespace SerializeJson
 {
-    internal class Person
-    {
-        public string Name { get; set; }
-    }
+    internal record Person(string Nome);
 
     internal class Food
     {
@@ -36,6 +27,7 @@ namespace SerializeJson
         Spicy, Salty, Sweet
     }
 
+    [JsonSourceGenerationOptions(WriteIndented = true, PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
     [JsonSerializable(typeof(Person))]
     [JsonSerializable(typeof(Food))]
     internal partial class JsonContext : JsonSerializerContext
